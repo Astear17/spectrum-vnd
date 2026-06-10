@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spectrum to Currency</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleSrcBody()"></div>
+    <aside class="src-drawer" id="srcDrawer">
+        <div class="drawer-header">
+            <h3>Tùy chọn</h3>
+            <button class="drawer-close" onclick="toggleSrcBody()" aria-label="Đóng tùy chọn">&times;</button>
+        </div>
+        <div class="drawer-body">
+            <div class="menu-section">
+                <h4 class="menu-title">Hiển thị phổ</h4>
+                <label class="menu-checkbox">
+                    <input type="checkbox" id="invertCheckbox" onchange="toggleInvertHorizontal()" />
+                    <span>Đảo ngang (bass bên phải)</span>
+                </label>
+            </div>
+
+            <div class="drawer-divider"></div>
+
+            <div class="menu-section">
+                <h4 class="menu-title">Nguồn âm thanh</h4>
+            </div>
+            <div class="upload-zone" id="dropZone">
+                <input type="file" accept="audio/*" id="fileInput" onchange="onFileChange(event)" />
+                <div class="upload-icon">&#9835;</div>
+                <div class="upload-main">Kéo và thả file âm thanh vào đây</div>
+                <div class="upload-sub">MP3 &middot; WAV &middot; FLAC &middot; OGG &middot; AAC</div>
+            </div>
+
+            <div class="drawer-divider">hoặc</div>
+
+            <div class="url-input-section">
+                <label for="mediaUrlInput" class="url-label">Nhập liên kết media hoặc YouTube (YouTube hiện ổn định
+                    hơn trên PC/Desktop)</label>
+                <div class="url-row">
+                    <input class="url-input" id="mediaUrlInput" type="url"
+                        placeholder="https://www.youtube.com/watch?v=... hoặc URL media khác" />
+                    <button class="gf-load-btn" id="mediaLoadBtn" onclick="loadFromUrl()">
+                        Tải
+                    </button>
+                </div>
+            </div>
+
+            <div class="url-status" id="urlStatus" role="status" aria-live="polite">
+                Chọn file âm thanh hoặc nhập liên kết media để bắt đầu.
+            </div>
+
+            <div class="drawer-watermark">
+                <span class="wm-label">Dev:</span>
+                <a href="https://www.facebook.com/moonchikuemochi" target="_blank" rel="noopener" class="wm-link">
+                    <svg class="wm-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path
+                            d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                    </svg>
+                    <span>Moonchi Kue Mochi</span>
+                </a>
+                <span class="wm-separator">||</span>
+                <a href="https://github.com/schzophree" target="_blank" rel="noopener" class="wm-link">
+                    <svg class="wm-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    </svg>
+                    <span>schzophree</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <main class="app-shell">
+        <section class="gf-card">
+            <div class="gf-actions">
+                <button class="gf-btn-icon" title="Chia sẻ tỷ giá" aria-label="Chia sẻ tỷ giá"
+                    onclick="shareCurrentRate()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                </button>
+                <a class="gf-btn-follow" href="https://schz-porto-ngawuor.vercel.app/" target="_blank" rel="noopener">
+                    <span>Theo dõi</span>
+                </a>
+            </div>
+
+            <div class="gf-top">
+                <div class="gf-left">
+                    <div class="gf-brand">Spectrum to Currency</div>
+                    <div class="gf-subtitle" id="subtitleText">Đang tải tỷ giá...</div>
+                    <div class="gf-big-value" id="bigValue" aria-live="polite">Đang kết nối đến dịch vụ tỷ giá</div>
+                    <div class="gf-meta">
+                        <span id="metaDate">--</span>
+                        <span class="dot">&middot;</span>
+                        <span id="metaTime">--</span>
+                        <span id="metaZone">Giờ địa phương</span>
+                        <span class="dot">&middot;</span>
+                        <span id="metaSource">ExchangeRate-API</span>
+                        <span class="dot">&middot;</span>
+                        <span class="gf-meta-status loading" id="metaStatus">Đang tải</span>
+                    </div>
+                    <div class="exchange-status loading" id="exchangeStatus" role="status" aria-live="polite">
+                        Đang kết nối tới API tỷ giá để lấy dữ liệu mới nhất.
+                    </div>
+                    <div class="gf-rate-note" id="rateDescription">
+                        Tỷ giá, mã tiền tệ, tên đồng tiền và mốc cập nhật sẽ hiển thị tại đây.
+                    </div>
+                    <div class="gf-inputs">
+                        <div class="gf-input-row">
+                            <input class="gf-input-num" type="text" id="sourceAmountInput" value="1"
+                                inputmode="decimal" autocomplete="off" />
+                            <div class="gf-select-wrap">
+                                <div class="gf-select-copy">
+                                    <label class="gf-select-caption" for="sourceCurrencySelect">Tiền nguồn</label>
+                                    <select class="gf-select-input" id="sourceCurrencySelect"
+                                        aria-label="Chọn tiền tệ nguồn"></select>
+                                    <span class="gf-select-meta" id="sourceCurrencyMeta">Đang tải danh sách tiền
+                                        tệ</span>
+                                </div>
+                                <span class="gf-chevron">&#9662;</span>
+                            </div>
+                        </div>
+                        <div class="gf-input-row">
+                            <input class="gf-input-num" type="text" id="targetAmountInput" value="" readonly
+                                placeholder="Sẽ cập nhật sau khi tải tỷ giá" />
+                            <div class="gf-select-wrap">
+                                <div class="gf-select-copy">
+                                    <label class="gf-select-caption" for="targetCurrencySelect">Tiền đích</label>
+                                    <select class="gf-select-input" id="targetCurrencySelect"
+                                        aria-label="Chọn tiền tệ đích"></select>
+                                    <span class="gf-select-meta" id="targetCurrencyMeta">Đang tải danh sách tiền
+                                        tệ</span>
+                                </div>
+                                <span class="gf-chevron">&#9662;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gf-right">
+                    <div class="gf-tabs">
+                        <button class="gf-tab" onclick="setVizMode('BASS', this)">
+                            TRẦM
+                        </button>
+                        <button class="gf-tab" onclick="setVizMode('MID', this)">
+                            TRUNG
+                        </button>
+                        <button class="gf-tab active" onclick="setVizMode('FULL', this)">
+                            FULL
+                        </button>
+                        <button class="gf-tab" onclick="setVizMode('WAVE', this)">
+                            SÓNG
+                        </button>
+                        <button class="gf-tab" onclick="setVizMode('MAKS', this)">
+                            ĐỈNH
+                        </button>
+                    </div>
+
+                    <div class="gf-chart-wrap" id="chartWrap">
+                        <div class="gf-yaxis" id="yAxis">
+                            <span class="gf-ylabel" id="yTop">100</span>
+                            <span class="gf-ylabel" id="yMid1">75</span>
+                            <span class="gf-ylabel" id="yMid2">50</span>
+                            <span class="gf-ylabel" id="yMid3">25</span>
+                            <span class="gf-ylabel" id="yBot">0</span>
+                        </div>
+
+                        <div class="gf-live-dot">
+                            <div class="gf-live-val" id="liveVal">0 Hz</div>
+                            <div class="gf-live-date" id="liveDate">Chưa có âm thanh</div>
+                        </div>
+
+                        <div class="gf-crosshair" id="crosshair">
+                            <div class="gf-crosshair-dot" id="crosshairDot"></div>
+                            <div class="gf-crosshair-box" id="crosshairBox">
+                                <div class="gf-crosshair-val" id="crosshairVal">0 Hz</div>
+                                <div class="gf-crosshair-lbl" id="crosshairLbl">
+                                    Biên độ phổ
+                                </div>
+                            </div>
+                        </div>
+
+                        <canvas id="specCanvas" class="spec-canvas" onmousemove="onChartMove(event)"
+                            onmouseleave="onChartLeave()"></canvas>
+
+                        <div class="gf-xaxis" id="xAxis">
+                            <span class="gf-xlabel">0 Hz</span>
+                            <span class="gf-xlabel">5k</span>
+                            <span class="gf-xlabel">10k</span>
+                            <span class="gf-xlabel">20k</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a class="gf-detail-link" id="detailLink" href="https://www.google.com/search?q=USD+to+VND" target="_blank"
+                rel="noopener">
+                Xem thêm về cặp USD/VND
+                <span class="arrow">&#8250;</span>
+            </a>
+        </section>
+
+        <section class="playback-bar">
+            <div class="playback-row">
+                <button class="src-menu-btn" id="menuBtn" onclick="toggleSrcBody()" title="Mở nguồn âm thanh"
+                    aria-label="Mở nguồn âm thanh">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true">
+                        <rect y="3" width="18" height="2" rx="1"></rect>
+                        <rect y="8" width="18" height="2" rx="1"></rect>
+                        <rect y="13" width="18" height="2" rx="1"></rect>
+                    </svg>
+                </button>
+                <button class="play-btn" id="playBtn" onclick="togglePlay()">
+                    &#9654;
+                </button>
+                <div class="progress-area">
+                    <div class="progress-track" id="progressTrack" onclick="seekAudio(event)">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="time-row">
+                        <span id="timeCur">0:00</span>
+                        <span id="timeTot">0:00</span>
+                    </div>
+                </div>
+                <div class="vol-row">
+                    <span class="vol-icon">Âm lượng</span>
+                    <input type="range" id="volRange" min="0" max="100" value="80" oninput="setVolume(this.value)" />
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <audio id="audioEl" crossorigin="anonymous"></audio>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
